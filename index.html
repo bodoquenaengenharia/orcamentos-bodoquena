@@ -122,6 +122,32 @@
             margin-top: 20px;
             font-size: 0.85rem;
         }
+        .botoes-acao {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Layout para impressão / PDF */
+        @media print {
+            body {
+                margin: 20mm;
+                max-width: 100%;
+            }
+            .topbar,
+            form,
+            h1,
+            h2,
+            .botoes-acao {
+                display: none !important;
+            }
+            .proposta {
+                border: none;
+                padding: 0;
+                background: #fff;
+            }
+        }
     </style>
 </head>
 <body>
@@ -154,6 +180,12 @@
             <div>
                 <label for="cidadeProposta">Cidade</label>
                 <input type="text" id="cidadeProposta" value="Campo Grande-MS">
+            </div>
+        </div>
+        <div class="linha">
+            <div>
+                <label for="numeroProposta">Número da Proposta (automático, editável)</label>
+                <input type="text" id="numeroProposta">
             </div>
         </div>
     </fieldset>
@@ -221,7 +253,10 @@
         </div>
     </fieldset>
 
-    <button type="button" onclick="gerarProposta()">Gerar Proposta</button>
+    <div class="botoes-acao">
+        <button type="button" onclick="gerarProposta()">Gerar Proposta</button>
+        <button type="button" onclick="imprimirPDF()">Gerar PDF</button>
+    </div>
 </form>
 
 <h2>Proposta Gerada</h2>
@@ -230,6 +265,7 @@
 </div>
 
 <script>
+    // PWA
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', function () {
             navigator.serviceWorker.register('service-worker.js').catch(function (err) {
@@ -336,6 +372,7 @@
         const cidade = document.getElementById('cidadeProposta').value || 'Campo Grande-MS';
         const data = formatarDataExtenso(cidade, document.getElementById('dataProposta').value);
 
+        const numeroProposta = document.getElementById('numeroProposta').value || '';
         const cliente = document.getElementById('cliente').value || 'Poligonal Engenharia e Construções LTDA';
         const contato = document.getElementById('contato').value || 'Renato Abrão';
         const localObra = document.getElementById('localObra').value || 'SESC – Rua Dom Aquino nº 1631, laje do estacionamento';
@@ -414,6 +451,8 @@
             </tr>`;
         }
 
+        const linhaNumero = numeroProposta ? `Proposta nº ${numeroProposta}\n` : '';
+
         const html = `
 ${data}
 
@@ -423,7 +462,7 @@ ${data}
 A/C: ${contato}
 
 
-Proposta: ${tituloProposta}
+${linhaNumero}Proposta: ${tituloProposta}
 
 
 A Bodoquena Engenharia apresenta proposta técnica-comercial para os serviços de impermeabilização com injeção de resina de poliuretano (PU) no ${localObra}, conforme detalhamento abaixo:
@@ -528,13 +567,23 @@ Rua Treze de Junho, nº 916, Bairro Vila Cidade – Campo Grande/MS
         document.getElementById('saida').innerHTML = html;
     }
 
+    // Número de proposta automático baseado na data/hora
     (function () {
         const hoje = new Date();
         const ano = hoje.getFullYear();
         const mes = String(hoje.getMonth() + 1).padStart(2, '0');
         const dia = String(hoje.getDate()).padStart(2, '0');
+        const hora = String(hoje.getHours()).padStart(2, '0');
+        const min = String(hoje.getMinutes()).padStart(2, '0');
+
         document.getElementById('dataProposta').value = `${ano}-${mes}-${dia}`;
+        document.getElementById('numeroProposta').value = `${ano}${mes}${dia}-${hora}${min}`;
     })();
+
+    function imprimirPDF() {
+        // Usa a função de impressão do navegador (no iPhone permite salvar em PDF)
+        window.print();
+    }
 </script>
 </body>
 </html>
