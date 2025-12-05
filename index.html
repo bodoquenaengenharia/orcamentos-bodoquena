@@ -40,7 +40,8 @@
         }
         input[type="text"],
         input[type="number"],
-        input[type="date"] {
+        input[type="date"],
+        input[type="file"] {
             width: 100%;
             padding: 4px;
             box-sizing: border-box;
@@ -67,9 +68,13 @@
             border: 1px solid #000;
             padding: 20px;
             margin-top: 20px;
-            white-space: pre-line;
+            white-space: normal;
             border-radius: 6px;
             background: #fafafa;
+        }
+        .proposta p {
+            margin: 4px 0;
+            text-align: justify;
         }
         table {
             width: 100%;
@@ -85,22 +90,21 @@
             padding: 4px;
             text-align: center;
         }
-        .right {
-            text-align: right;
-        }
-        .center {
-            text-align: center;
-        }
+        .right { text-align: right; }
+        .center { text-align: center; }
+        .left { text-align: left; }
+
         .topbar {
             text-align: center;
             margin-bottom: 6px;
             font-size: 0.85rem;
             color: #555;
         }
+
         .timbrado {
             border-bottom: 2px solid #000;
-            padding-bottom: 8px;
-            margin-bottom: 16px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -113,14 +117,12 @@
         }
         .timbrado-logo img {
             height: 50px;
+            width: auto;
         }
         .timbrado-texto {
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             text-align: right;
-        }
-        .rodape-bodoquena {
-            margin-top: 20px;
-            font-size: 0.85rem;
+            text-transform: uppercase;
         }
         .botoes-acao {
             display: flex;
@@ -128,11 +130,30 @@
             margin-top: 10px;
             flex-wrap: wrap;
         }
+        .rodape-bodoquena {
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+        ul.lista-pontos {
+            margin-top: 4px;
+            margin-bottom: 8px;
+            padding-left: 18px;
+        }
+        ul.lista-pontos li {
+            margin-bottom: 2px;
+        }
+
+        .fotos-container img {
+            max-width: 100%;
+            max-height: 400px;
+            display: block;
+            margin-top: 8px;
+        }
 
         /* Layout para impressão / PDF */
         @media print {
             body {
-                margin: 20mm;
+                margin: 20mm 15mm;
                 max-width: 100%;
             }
             .topbar,
@@ -142,10 +163,21 @@
             .botoes-acao {
                 display: none !important;
             }
+            .timbrado {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: #fff;
+                padding-top: 0;
+                margin: 0;
+                border-bottom: 1px solid #000;
+            }
             .proposta {
                 border: none;
                 padding: 0;
                 background: #fff;
+                margin-top: 90px; /* espaço abaixo do cabeçalho fixo */
             }
         }
     </style>
@@ -155,15 +187,15 @@
     <strong>Orçamentos Bodoquena</strong> – adicione esta página na tela inicial para usar como aplicativo.
 </div>
 
-<!-- Cabeçalho tipo papel timbrado: logo à esquerda, dados à direita -->
+<!-- Cabeçalho tipo papel timbrado: logo + dados repetidos em todas as páginas -->
 <div class="timbrado">
     <div class="timbrado-logo">
         <img src="logo_bodoquena.png" alt="Bodoquena Engenharia">
     </div>
     <div class="timbrado-texto">
-        <strong>BODOQUENA ENGENHARIA COMÉRCIO LTDA</strong><br>
-        CNPJ 16.043.945/0001-20<br>
-        I.E.: 28.396.067-1
+        <strong>BODOQUENA ENGENHARIA</strong><br>
+        Rua Treze de Junho, nº 916, Bairro Vila Cidade – Campo Grande/MS<br>
+        CNPJ 16.043.945/0001-20 – I.E.: 28.396.067-1
     </div>
 </div>
 
@@ -174,7 +206,7 @@
         <legend>Dados da Proposta</legend>
         <div class="linha">
             <div>
-                <label for="dataProposta">Data (Campo Grande-MS)</label>
+                <label for="dataProposta">Data</label>
                 <input type="date" id="dataProposta">
             </div>
             <div>
@@ -193,51 +225,40 @@
     <fieldset>
         <legend>Dados do Cliente / Obra</legend>
         <label for="cliente">Cliente</label>
-        <input type="text" id="cliente" value="Poligonal Engenharia e Construções LTDA">
+        <input type="text" id="cliente" value="HVM">
 
         <label for="contato">A/C</label>
-        <input type="text" id="contato" value="Renato Abrão">
+        <input type="text" id="contato" value="Sandro e Caio">
 
         <label for="localObra">Obra / Local</label>
-        <input type="text" id="localObra" value="SESC – Rua Dom Aquino nº 1631, laje do estacionamento">
+        <input type="text" id="localObra" value="Edifício Vertigo, garagem subsolo 2">
 
         <label for="tituloProposta">Título da Proposta</label>
-        <input type="text" id="tituloProposta" value="Impermeabilização com Injeção de Resinas de PU – SESC">
+        <input type="text" id="tituloProposta" value="Impermeabilização com Injeção de Resinas de PU – HVM">
     </fieldset>
 
     <fieldset>
-        <legend>Planilha de Preços</legend>
+        <legend>Serviços e Valores</legend>
 
         <div class="linha">
             <div>
-                <label for="qtdVb">Item 01 - Pontos de Injeção (Vb)</label>
-                <input type="number" id="qtdVb" value="1" min="0" step="1">
+                <label for="metragemLinear">Metragem Linear Inicial (m)</label>
+                <input type="number" id="metragemLinear" value="7" min="0" step="0.01">
             </div>
             <div>
-                <label for="valorVb">Valor unitário Vb (R$)</label>
-                <input type="number" id="valorVb" value="4500" min="0" step="0.01">
+                <label for="valorMetroLinear">Valor unitário Injeção por metro linear (R$)</label>
+                <input type="number" id="valorMetroLinear" value="1000" min="0" step="0.01">
             </div>
         </div>
 
         <div class="linha">
             <div>
-                <label for="qtdPontoAdic">Item 02 - Pontos Adicinais (unidades)</label>
+                <label for="qtdPontoAdic">Ponto Adicinal – Quantidade (Und)</label>
                 <input type="number" id="qtdPontoAdic" value="0" min="0" step="1">
             </div>
             <div>
                 <label for="valorPontoAdic">Valor unitário Ponto Adicinal (R$)</label>
                 <input type="number" id="valorPontoAdic" value="500" min="0" step="0.01">
-            </div>
-        </div>
-
-        <div class="linha">
-            <div>
-                <label for="qtdMetroLinear">Item 03 - Injeção por metro linear (m)</label>
-                <input type="number" id="qtdMetroLinear" value="0" min="0" step="0.01">
-            </div>
-            <div>
-                <label for="valorMetroLinear">Valor unitário metro linear (R$)</label>
-                <input type="number" id="valorMetroLinear" value="1000" min="0" step="0.01">
             </div>
         </div>
 
@@ -251,6 +272,12 @@
                 <input type="number" id="validade" value="30" min="1" step="1">
             </div>
         </div>
+    </fieldset>
+
+    <fieldset>
+        <legend>Fotos da Obra</legend>
+        <label for="fotosObra">Selecione uma ou mais fotos (serão incluídas na proposta/PDF):</label>
+        <input type="file" id="fotosObra" accept="image/*" multiple>
     </fieldset>
 
     <div class="botoes-acao">
@@ -368,49 +395,71 @@
         return `${cidade}, ${dia} de ${mesNome} de ${ano}.`;
     }
 
+    function inserirFotosNaProposta() {
+        const input = document.getElementById('fotosObra');
+        const saida = document.getElementById('saida');
+
+        if (!input.files || input.files.length === 0) return;
+
+        const fotosDiv = document.createElement('div');
+        fotosDiv.className = 'fotos-container';
+        fotosDiv.innerHTML = '<p><strong> Registro Fotográfico:</strong></p>';
+
+        for (let i = 0; i < input.files.length; i++) {
+            const file = input.files[i];
+            if (!file.type.startsWith('image/')) continue;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                fotosDiv.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        saida.appendChild(fotosDiv);
+    }
+
     function gerarProposta() {
         const cidade = document.getElementById('cidadeProposta').value || 'Campo Grande-MS';
         const data = formatarDataExtenso(cidade, document.getElementById('dataProposta').value);
 
         const numeroProposta = document.getElementById('numeroProposta').value || '';
-        const cliente = document.getElementById('cliente').value || 'Poligonal Engenharia e Construções LTDA';
-        const contato = document.getElementById('contato').value || 'Renato Abrão';
-        const localObra = document.getElementById('localObra').value || 'SESC – Rua Dom Aquino nº 1631, laje do estacionamento';
-        const tituloProposta = document.getElementById('tituloProposta').value || 'Impermeabilização com Injeção de Resinas de PU – SESC';
+        const cliente = document.getElementById('cliente').value || 'HVM';
+        const contato = document.getElementById('contato').value || 'Sandro e Caio';
+        const localObra = document.getElementById('localObra').value || 'Edifício Vertigo, garagem subsolo 2';
+        const tituloProposta = document.getElementById('tituloProposta').value || 'Impermeabilização com Injeção de Resinas de PU – HVM';
 
-        const qtdVb = Number(document.getElementById('qtdVb').value || 0);
-        const valorVb = Number(document.getElementById('valorVb').value || 0);
+        const metragemLinear = Number(document.getElementById('metragemLinear').value || 0);
+        const valorMetroLinear = Number(document.getElementById('valorMetroLinear').value || 0);
 
         const qtdPontoAdic = Number(document.getElementById('qtdPontoAdic').value || 0);
         const valorPontoAdic = Number(document.getElementById('valorPontoAdic').value || 0);
 
-        const qtdMetroLinear = Number(document.getElementById('qtdMetroLinear').value || 0);
-        const valorMetroLinear = Number(document.getElementById('valorMetroLinear').value || 0);
-
         const condPagamento = document.getElementById('condPagamento').value || 'Após término dos serviços; Prazo a combinar;';
         const validade = Number(document.getElementById('validade').value || 30);
 
-        const totalVb = qtdVb * valorVb;
+        const totalMetroLinear = metragemLinear * valorMetroLinear;
         const totalPontoAdic = qtdPontoAdic * valorPontoAdic;
-        const totalMetroLinear = qtdMetroLinear * valorMetroLinear;
+        const totalGeral = totalMetroLinear + totalPontoAdic;
 
-        const totalGeral = totalVb + totalPontoAdic + totalMetroLinear;
         const totalGeralFormatado = formatarMoeda(totalGeral);
         const totalExtenso = numeroPorExtenso(totalGeral);
 
         let linhasTabela = '';
 
-        const qtdTextoVb = qtdVb > 0 ? `${qtdVb} Vb*` : '1 Vb*';
-        const totalItemVb = qtdVb > 0 ? totalVb : valorVb;
+        // Item 01 – Injeção por metro linear
         linhasTabela += `
         <tr>
             <td>01</td>
-            <td class="center">Pontos de injeção</td>
-            <td class="center">${qtdTextoVb}</td>
-            <td class="right">${formatarMoeda(valorVb)}</td>
-            <td class="right">${formatarMoeda(totalItemVb)}</td>
+            <td class="center">Injeção por metro linear</td>
+            <td class="center">${metragemLinear.toFixed(2)} m</td>
+            <td class="right">${formatarMoeda(valorMetroLinear)}</td>
+            <td class="right">${formatarMoeda(totalMetroLinear)}</td>
         </tr>`;
 
+        // Item 02 – Ponto Adicinal
         if (qtdPontoAdic > 0) {
             linhasTabela += `
             <tr>
@@ -431,76 +480,49 @@
             </tr>`;
         }
 
-        if (qtdMetroLinear > 0) {
-            linhasTabela += `
-            <tr>
-                <td>03</td>
-                <td class="center">Injeção por metro linear</td>
-                <td class="center">${qtdMetroLinear.toFixed(2)} m</td>
-                <td class="right">${formatarMoeda(valorMetroLinear)}</td>
-                <td class="right">${formatarMoeda(totalMetroLinear)}</td>
-            </tr>`;
-        } else {
-            linhasTabela += `
-            <tr>
-                <td>03</td>
-                <td class="center">Injeção por metro linear</td>
-                <td class="center">-</td>
-                <td class="right">${formatarMoeda(valorMetroLinear)}</td>
-                <td class="right">-</td>
-            </tr>`;
-        }
-
         const linhaNumero = numeroProposta ? `Proposta nº ${numeroProposta}\n` : '';
 
         const html = `
-${data}
+<p class="left">${data}</p>
 
-
-À ${cliente}
-
+<p class="left">
+À ${cliente}<br>
 A/C: ${contato}
+</p>
 
+<p class="left">
+${linhaNumero}<strong>Proposta: ${tituloProposta}</strong>
+</p>
 
-${linhaNumero}Proposta: ${tituloProposta}
-
-
+<p class="left">
 A Bodoquena Engenharia apresenta proposta técnica-comercial para os serviços de impermeabilização com injeção de resina de poliuretano (PU) no ${localObra}, conforme detalhamento abaixo:
+</p>
 
-Descrição Técnica:
+<p><strong> Descrição Técnica:</strong></p>
+<ul class="lista-pontos">
+    <li>Tipo de resina: Gel de Poliuretano dúctil-elástico para selamento de trincas por injeção;</li>
+    <li>Aplicação: Injeção sob pressão com equipamento Airless.</li>
+    <li>Técnica: Uso de válvulas de injeção, em trincas e juntas.</li>
+    <li>Finalidade: Vedação de infiltrações em concreto.</li>
+    <li>Metragem Linear Inicial: ${metragemLinear.toFixed(2)} metros.</li>
+</ul>
 
-Tipo de resina: Gel de Poliuretano dúctil-elástico para selamento de trincas por injeção;
+<p><strong> Itens inclusos no Serviço:</strong></p>
+<ul class="lista-pontos">
+    <li>Mão de Obra especializada;</li>
+    <li>Equipamentos e materiais específicos;</li>
+    <li>Locomoção, alimentação e despesas da equipe técnica;</li>
+    <li>Limpeza da área de trabalho;</li>
+    <li>Coleta, retirada e destinação dos resíduos gerados;</li>
+</ul>
 
-Aplicação: Injeção sob pressão com equipamento Airless.
+<p><strong> Itens NÃO Inclusos no Serviço:</strong></p>
+<ul class="lista-pontos">
+    <li>Instalações elétricas e hidráulicas;</li>
+    <li>Refeitório e banheiros para equipe técnica;</li>
+</ul>
 
-Técnica: Uso de válvulas de injeção, em trincas e juntas.
-
-Finalidade: Vedação de infiltrações em concreto.
-
-Pontos : ${qtdVb > 0 ? qtdVb : 1} unidade 
-
-
-Itens inclusos no Serviço:
-
-Mão de Obra especializada;
-
-Equipamentos e materiais específicos;
-
-Locomoção, alimentação e despesas da equipe técnica;
-
-Limpeza da área de trabalho;
-
-Coleta, retirada e destinação dos resíduos gerados;
-
-
-Itens NÃO Inclusos no Serviço:
-
-Instalações elétricas e hidráulicas; 
-
-Refeitório e banheiros para equipe técnica; 
-
-
-Serviços propostos – Iniciais:
+<p><strong> Serviços propostos – Iniciais:</strong></p>
 
 <table>
     <thead>
@@ -515,56 +537,44 @@ Serviços propostos – Iniciais:
     <tbody>
         ${linhasTabela}
         <tr>
-            <td colspan="5">
-                <div style="display:flex;justify-content:space-between;">
-                    <span>*Vb: Para até 3 pontos no mesmo local</span>
-                    <span>Total: <strong>${totalGeralFormatado}</strong></span>
-                </div>
+            <td colspan="5" class="right">
+                Total: <strong>${totalGeralFormatado}</strong>
             </td>
         </tr>
     </tbody>
 </table>
 
-Critério de Medição e Faturamento:
+<p><strong> Condição de Pagamento:</strong></p>
+<ul class="lista-pontos">
+    <li>${condPagamento.replace(/;/g, ';</li><li>')}</li>
+</ul>
 
-O quantitativo apresentado nesta proposta foi estimado de forma preliminar, tomando como base nas condições aparentes no momento da vistoria.
+<p><strong> Validade da Proposta:</strong></p>
+<ul class="lista-pontos">
+    <li>${validade} Dias;</li>
+</ul>
 
-Todavia, caso sejam identificados pontos de injeção cuja natureza apresente características de fissuras com desenvolvimento em metragem linear, o serviço correspondente será medido e faturado por metro linear, conforme o item específico da planilha de preços.
+<p><strong> Garantia do serviço:</strong></p>
+<ul class="lista-pontos">
+    <li>12 meses para reaparecimento de infiltrações nos locais tratados;</li>
+</ul>
 
-Condição de Pagamento:
+<p><strong> Valor total da Proposta</strong></p>
+<ul class="lista-pontos">
+    <li>${totalGeralFormatado} (${totalExtenso}).</li>
+</ul>
 
-${condPagamento}
+<br><br>
 
-Validade da Proposta:
-
-${validade} Dias;
-
-Garantia do serviço:
-
-12 meses para reaparecimento de infiltrações nos locais tratados;
-
-Valor total da Proposta
-
-${totalGeralFormatado} (${totalExtenso}).
-
-
-Atenciosamente,
-
-
-Renato Ferreira Lopes Brum
-
-(67) 99982 7011
-
+<p class="left">
+Renato Ferreira Lopes Brum<br>
+(67) 99982 7011<br>
 Bodoquena Engenharia Comércio LTDA
-
-
-<div class="rodape-bodoquena">
-BODOQUENA ENGENHARIA<br>
-Rua Treze de Junho, nº 916, Bairro Vila Cidade – Campo Grande/MS
-</div>
+</p>
         `;
 
         document.getElementById('saida').innerHTML = html;
+        inserirFotosNaProposta();
     }
 
     // Número de proposta automático baseado na data/hora
@@ -581,7 +591,6 @@ Rua Treze de Junho, nº 916, Bairro Vila Cidade – Campo Grande/MS
     })();
 
     function imprimirPDF() {
-        // Usa a função de impressão do navegador (no iPhone permite salvar em PDF)
         window.print();
     }
 </script>
